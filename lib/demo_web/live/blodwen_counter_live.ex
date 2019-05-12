@@ -16,11 +16,7 @@ defmodule DemoWeb.BlodwenCounterLive do
     Blodwen.mount(socket)
   end
 
-  def handle_event("inc", _, socket) do
-    Blodwen.inc(socket)
-  end
-
-  def handle_event("dec", _, socket) do
-    Blodwen.dec(socket)
+  def handle_event(event, _, socket) do
+    Blodwen.handle_event(event, socket)
   end
 end

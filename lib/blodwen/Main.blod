@@ -9,16 +9,14 @@ mount socket =
   in pure $ MkErlTuple2 (MkErlAtom "ok") newSocket
 
 
-%erl_export "inc" 1
-inc : ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
-inc socket =
+%erl_export "handle_event" 2
+handleEvent : String -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
+
+handleEvent "inc" socket =
   let newSocket = update (MkErlAtom "val") (+ 1) socket
   in pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
 
-
-%erl_export "dec" 1
-dec : ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
-dec socket =
+handleEvent "dec" socket =
   let newSocket = update (MkErlAtom "val") (\x => x - 1) socket
   in pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
 
@@ -27,6 +25,5 @@ main : IO ()
 main = do
   -- NOTE: Workaround to be able to export "unused" functions
   let _ = mount
-  let _ = inc
-  let _ = dec
+  let _ = handleEvent
   pure ()
