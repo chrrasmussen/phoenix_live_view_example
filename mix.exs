@@ -7,7 +7,8 @@ defmodule Demo.Mixfile do
       version: "0.1.0",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      blodwen_entrypoints: [{Blodwen, "lib/blodwen", "Main.blod"}],
+      compilers: [:blodwen, :phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -47,6 +48,7 @@ defmodule Demo.Mixfile do
       {:jason, "~> 1.0"},
       {:cowboy, "~> 2.0"},
       {:calendar, "~> 0.17.5"},
+      {:mix_blodwen, path: "../mix_blodwen_umbrella/apps/mix_blodwen"}
     ]
   end
 

@@ -51,9 +51,10 @@ config :demo, DemoWeb.Endpoint,
     patterns: [
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
-      ~r{lib/demo_web/views/.*(ex)$},
-      ~r{lib/demo_web/templates/.*(eex)$},
-      ~r{lib/demo_web/live/.*(ex)$},
+      ~r{lib/.*(ex|eex|blod)$},
+      # ~r{lib/demo_web/views/.*(ex)$},
+      # ~r{lib/demo_web/templates/.*(eex)$},
+      # ~r{lib/demo_web/live/.*(ex)$},
     ]
   ]
 
@@ -75,3 +76,6 @@ config :demo, Demo.Repo,
   database: "demo_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :demo, DemoWeb.Endpoint,
+  reloadable_compilers: [:blodwen, :erlang, :gettext, :phoenix, :elixir]
