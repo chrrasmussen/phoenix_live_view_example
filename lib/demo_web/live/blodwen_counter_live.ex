@@ -13,14 +13,14 @@ defmodule DemoWeb.BlodwenCounterLive do
   end
 
   def mount(_session, socket) do
-    {:ok, assign(socket, :val, 0)}
+    Blodwen.mount(socket)
   end
 
   def handle_event("inc", _, socket) do
-    {:noreply, update(socket, :val, &(&1 + 1))}
+    Blodwen.inc(socket)
   end
 
   def handle_event("dec", _, socket) do
-    {:noreply, update(socket, :val, &(&1 - 1))}
+    Blodwen.dec(socket)
   end
 end
