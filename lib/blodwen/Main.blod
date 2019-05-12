@@ -8,21 +8,21 @@ render assigns =
   pure $ renderTemplate "Elixir.DemoWeb.BlodwenCounterView" "index.html" assigns
 
 
-%erl_export "mount" 1
-mount : ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
-mount socket =
+%erl_export "mount" 2
+mount : ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
+mount session socket =
   let newSocket = assign (MkErlAtom "val") (the Int 0) socket
   in pure $ MkErlTuple2 (MkErlAtom "ok") newSocket
 
 
-%erl_export "handle_event" 2
-handleEvent : String -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
+%erl_export "handle_event" 3
+handleEvent : String -> ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
 
-handleEvent "inc" socket =
+handleEvent "inc" unsignedParams socket =
   let newSocket = update (MkErlAtom "val") (+ 1) socket
   in pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
 
-handleEvent "dec" socket =
+handleEvent "dec" unsignedParams socket =
   let newSocket = update (MkErlAtom "val") (\x => x - 1) socket
   in pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
 

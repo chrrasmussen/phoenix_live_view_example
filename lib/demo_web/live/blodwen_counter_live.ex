@@ -5,11 +5,11 @@ defmodule DemoWeb.BlodwenCounterLive do
     Blodwen.render(assigns)
   end
 
-  def mount(_session, socket) do
-    Blodwen.mount(socket)
+  def mount(session, socket) do
+    Blodwen.mount(session, socket)
   end
 
-  def handle_event(event, _, socket) do
-    Blodwen.handle_event(event, socket)
+  def handle_event(event, unsigned_params, socket) do
+    Blodwen.handle_event(event, unsigned_params, socket)
   end
 end
