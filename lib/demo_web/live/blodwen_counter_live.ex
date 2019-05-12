@@ -2,14 +2,7 @@ defmodule DemoWeb.BlodwenCounterLive do
   use Phoenix.LiveView
 
   def render(assigns) do
-    ~L"""
-    <div>
-      <h1 phx-click="boom">The count is: <%= @val %></h1>
-      <button phx-click="boom" class="alert-danger">BOOM</button>
-      <button phx-click="dec">-</button>
-      <button phx-click="inc">+</button>
-    </div>
-    """
+    Blodwen.render(assigns)
   end
 
   def mount(_session, socket) do

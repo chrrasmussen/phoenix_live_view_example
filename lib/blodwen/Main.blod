@@ -2,6 +2,12 @@ import ErlangPrelude
 import PhoenixLiveView
 
 
+%erl_export "render" 1
+render : ErlTerm -> IO ErlTerm
+render assigns =
+  pure $ renderTemplate "Elixir.DemoWeb.BlodwenCounterView" "index.html" assigns
+
+
 %erl_export "mount" 1
 mount : ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
 mount socket =
@@ -24,6 +30,7 @@ handleEvent "dec" socket =
 main : IO ()
 main = do
   -- NOTE: Workaround to be able to export "unused" functions
+  let _ = render
   let _ = mount
   let _ = handleEvent
   pure ()
