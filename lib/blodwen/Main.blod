@@ -3,27 +3,27 @@ import PhoenixLiveView
 
 
 %erl_export "render" 1
-render : ErlTerm -> IO ErlTerm
+render : ErlMap -> IO ErlTerm
 render assigns =
   pure $ renderTemplate "Elixir.DemoWeb.BlodwenCounterView" "index.html" assigns
 
 
 %erl_export "mount" 2
-mount : ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
+mount : ErlMap -> Socket -> IO (ErlTuple2 ErlAtom Socket)
 mount session socket =
   let newSocket = assign (MkErlAtom "val") (the Int 0) socket
   in pure $ MkErlTuple2 (MkErlAtom "ok") newSocket
 
 
 %erl_export "handle_event" 3
-handleEvent : String -> ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
+handleEvent : String -> ErlTerm -> Socket -> IO (ErlTuple2 ErlAtom Socket)
 
 handleEvent "inc" unsignedParams socket =
-  let newSocket = update (MkErlAtom "val") (+ 1) socket
+  let newSocket = update (MkErlAtom "val") (\x => erlUnsafeCast Int x + 1) socket
   in pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
 
 handleEvent "dec" unsignedParams socket =
-  let newSocket = update (MkErlAtom "val") (\x => x - 1) socket
+  let newSocket = update (MkErlAtom "val") (\x => erlUnsafeCast Int x - 1) socket
   in pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
 
 
