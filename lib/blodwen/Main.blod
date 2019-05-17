@@ -2,30 +2,30 @@ import ErlangPrelude
 import PhoenixLiveView
 
 
-render : ErlTerm -> IO ErlTerm
+render : ErlMap -> ErlTerm
 render assigns =
-  pure $ renderTemplate "Elixir.DemoWeb.BlodwenCounterView" "index.html" assigns
+  renderTemplate "Elixir.DemoWeb.BlodwenCounterView" "index.html" assigns
 
 
 mount : ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
-mount session socket =
+mount session socket = do
   let newSocket = assign (MkErlAtom "val") (the Int 0) socket
-  in pure $ MkErlTuple2 (MkErlAtom "ok") newSocket
+  pure $ MkErlTuple2 (MkErlAtom "ok") newSocket
 
 
 handleEvent : String -> ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
 
-handleEvent "inc" unsignedParams socket =
-  let newSocket = update (MkErlAtom "val") (+ 1) socket
-  in pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
+handleEvent "inc" unsignedParams socket = do
+  let newSocket = update (MkErlAtom "val") (\x => erlUnsafeCast Int x + 1) socket
+  pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
 
-handleEvent "dec" unsignedParams socket =
-  let newSocket = update (MkErlAtom "val") (\x => x - 1) socket
-  in pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
+handleEvent "dec" unsignedParams socket = do
+  let newSocket = update (MkErlAtom "val") (\x => erlUnsafeCast Int x - 1) socket
+  pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
 
 
 exports : ErlExports
 exports =
-  Fun "render" (MkErlIO1 render) <+>
+  Fun "render" (MkErlFun1 render) <+>
     Fun "mount" (MkErlIO2 mount) <+>
     Fun "handle_event" (MkErlIO3 handleEvent)

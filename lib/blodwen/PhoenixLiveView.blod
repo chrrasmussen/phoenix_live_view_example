@@ -4,7 +4,7 @@ import ErlangPrelude
 
 
 export
-renderTemplate : String -> String -> ErlTerm -> ErlTerm
+renderTemplate : String -> String -> ErlMap -> ErlTerm
 renderTemplate viewModule templateName assigns = unsafePerformIO $
   erlCall viewModule "render" [templateName, assigns]
 
@@ -16,6 +16,6 @@ assign key value socket = unsafePerformIO $
 
 
 export
-update : (ErlType key, ErlType value) => key -> (value -> value) -> ErlTerm -> ErlTerm
+update : (ErlType key, ErlType value) => key -> (ErlTerm -> value) -> ErlTerm -> ErlTerm
 update key func socket = unsafePerformIO $
   erlCall "Elixir.Phoenix.LiveView" "update" [socket, key, func]
