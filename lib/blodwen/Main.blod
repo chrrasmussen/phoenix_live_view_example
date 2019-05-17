@@ -2,20 +2,17 @@ import ErlangPrelude
 import PhoenixLiveView
 
 
-%erl_export "render" 1
 render : ErlTerm -> IO ErlTerm
 render assigns =
   pure $ renderTemplate "Elixir.DemoWeb.BlodwenCounterView" "index.html" assigns
 
 
-%erl_export "mount" 2
 mount : ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
 mount session socket =
   let newSocket = assign (MkErlAtom "val") (the Int 0) socket
   in pure $ MkErlTuple2 (MkErlAtom "ok") newSocket
 
 
-%erl_export "handle_event" 3
 handleEvent : String -> ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
 
 handleEvent "inc" unsignedParams socket =
@@ -27,10 +24,8 @@ handleEvent "dec" unsignedParams socket =
   in pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
 
 
-main : IO ()
-main = do
-  -- NOTE: Workaround to be able to export "unused" functions
-  let _ = render
-  let _ = mount
-  let _ = handleEvent
-  pure ()
+exports : ErlExports
+exports =
+  Fun "render" (MkErlIO1 render) <+>
+    Fun "mount" (MkErlIO2 mount) <+>
+    Fun "handle_event" (MkErlIO3 handleEvent)

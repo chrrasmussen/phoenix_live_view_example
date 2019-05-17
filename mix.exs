@@ -7,7 +7,7 @@ defmodule Demo.Mixfile do
       version: "0.1.0",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
-      blodwen_entrypoints: [{DemoWeb.BlodwenCounterLive, "lib/blodwen", "Main.blod"}],
+      blodwen_entrypoints: [{DemoWeb.BlodwenCounterLive, "lib/blodwen", "Main.blod", "exports"}],
       compilers: [:blodwen, :phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
