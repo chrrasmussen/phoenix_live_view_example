@@ -1,15 +1,17 @@
 import ErlangPrelude
 import PhoenixLiveView
 
+Model : Type
+Model = Int
 
-init : IO Int
+init : IO Model
 init = pure 0
 
-update : String -> Int -> IO Int
+update : String -> Model -> IO Model
 update "inc" model = pure $ model + 1
 update "dec" model = pure $ model - 1
 
-view : Int -> View
+view : Model -> View
 view model =
   let assigns = insert (MkErlAtom "val") model empty
   in renderTemplate "Elixir.DemoWeb.BlodwenCounterView" "index.html" assigns
