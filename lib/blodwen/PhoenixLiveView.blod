@@ -3,10 +3,15 @@ module PhoenixLiveView
 import ErlangPrelude
 
 
+-- RENDER
+
 export
 renderTemplate : String -> String -> ErlMap -> ErlTerm
 renderTemplate viewModule templateName assigns = unsafePerformIO $
   erlCall viewModule "render" [templateName, assigns]
+
+
+-- HELPERS
 
 socketAssign : (ErlType key, ErlType value) => key -> value -> ErlTerm -> ErlTerm
 socketAssign key value socket = unsafePerformIO $
@@ -21,6 +26,8 @@ socketGet key socket = do
   assigns <- unsafeLookup (MkErlAtom "assigns") ErlMap (erlUnsafeCast ErlMap socket)
   unsafeLookup key ErlTerm assigns
 
+
+-- LIFE-CYCLE
 
 modelKey : ErlAtom
 modelKey = MkErlAtom "blodwen_model"
@@ -44,6 +51,8 @@ render view assigns =
   let Just (MkRaw modelData) = unsafeLookup modelKey (Raw model) assigns
   in view modelData
 
+
+-- EXPORT
 
 export %inline
 exportPhoenixLiveView :
