@@ -2,30 +2,20 @@ import ErlangPrelude
 import PhoenixLiveView
 
 
-render : ErlMap -> ErlTerm
-render assigns =
-  renderTemplate "Elixir.DemoWeb.BlodwenCounterView" "index.html" assigns
-
-
-mount : ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
-mount session socket = do
-  let newSocket = assign (MkErlAtom "val") (the Int 0) socket
-  pure $ MkErlTuple2 (MkErlAtom "ok") newSocket
-
-
-handleEvent : String -> ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
-
-handleEvent "inc" unsignedParams socket = do
-  let newSocket = update (MkErlAtom "val") (\x => erlUnsafeCast Int x + 1) socket
-  pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
-
-handleEvent "dec" unsignedParams socket = do
-  let newSocket = update (MkErlAtom "val") (\x => erlUnsafeCast Int x - 1) socket
-  pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
-
+%inline
+counter : PhoenixLiveView Int
+counter =
+  MkPhoenixLiveView
+    (pure 0)
+    (\event, model =>
+      case event of
+        "inc" => pure $ model + 1
+        "dec" => pure $ model - 1
+    )
+    (\model =>
+      let assigns = insert (MkErlAtom "val") model empty
+      in renderTemplate "Elixir.DemoWeb.BlodwenCounterView" "index.html" assigns)
 
 exports : ErlExports
 exports =
-  Fun "render" (MkErlFun1 render) <+>
-    Fun "mount" (MkErlIO2 mount) <+>
-    Fun "handle_event" (MkErlIO3 handleEvent)
+  exportPhoenixLiveView counter

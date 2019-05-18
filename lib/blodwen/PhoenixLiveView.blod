@@ -8,14 +8,54 @@ renderTemplate : String -> String -> ErlMap -> ErlTerm
 renderTemplate viewModule templateName assigns = unsafePerformIO $
   erlCall viewModule "render" [templateName, assigns]
 
-
-export
-assign : (ErlType key, ErlType value) => key -> value -> ErlTerm -> ErlTerm
-assign key value socket = unsafePerformIO $
+socketAssign : (ErlType key, ErlType value) => key -> value -> ErlTerm -> ErlTerm
+socketAssign key value socket = unsafePerformIO $
   erlCall "Elixir.Phoenix.LiveView" "assign" [socket, key, value]
 
-
-export
-update : (ErlType key, ErlType value) => key -> (ErlTerm -> value) -> ErlTerm -> ErlTerm
-update key func socket = unsafePerformIO $
+socketUpdate : (ErlType key, ErlType value) => key -> (ErlTerm -> value) -> ErlTerm -> ErlTerm
+socketUpdate key func socket = unsafePerformIO $
   erlCall "Elixir.Phoenix.LiveView" "update" [socket, key, func]
+
+socketGet : (ErlType key) => key -> ErlTerm -> Maybe ErlTerm
+socketGet key socket = do
+  assigns <- unsafeLookup (MkErlAtom "assigns") ErlMap (erlUnsafeCast ErlMap socket)
+  unsafeLookup key ErlTerm assigns
+
+
+public export
+record PhoenixLiveView model where
+  constructor MkPhoenixLiveView
+  init : IO model
+  update : String -> model -> IO model
+  view : model -> ErlTerm
+
+
+modelKey : ErlAtom
+modelKey = MkErlAtom "blodwen_model"
+
+mount : IO model -> ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
+mount init session socket = do
+  modelData <- init
+  let newSocket = socketAssign modelKey (MkRaw modelData) socket
+  pure $ MkErlTuple2 (MkErlAtom "ok") newSocket
+
+handleEvent : (String -> model -> IO model) -> String -> ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
+handleEvent update event unsignedParams socket = do
+  let Just term = socketGet modelKey socket
+  let MkRaw modelData = (erlUnsafeCast (Raw model) term)
+  newModelData <- update event modelData
+  let newSocket = socketAssign modelKey (MkRaw newModelData) socket
+  pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
+
+render : (model -> ErlTerm) -> ErlMap -> ErlTerm
+render view assigns =
+  let Just (MkRaw modelData) = unsafeLookup modelKey (Raw model) assigns
+  in view modelData
+
+
+export %inline
+exportPhoenixLiveView : PhoenixLiveView model -> ErlExports
+exportPhoenixLiveView (MkPhoenixLiveView init update view) =
+  Fun "mount" (MkErlIO2 (mount init)) <+>
+    Fun "handle_event" (MkErlIO3 (handleEvent update)) <+>
+    Fun "render" (MkErlFun1 (render view))
