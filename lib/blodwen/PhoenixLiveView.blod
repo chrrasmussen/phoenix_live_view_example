@@ -48,11 +48,11 @@ mount init session socket = do
   let newSocket = socketAssign modelKey (MkRaw modelData) socket
   pure $ MkErlTuple2 (MkErlAtom "ok") newSocket
 
-handleEvent : (String -> model -> IO model) -> String -> ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
+handleEvent : (String -> ErlTerm -> model -> IO model) -> String -> ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
 handleEvent update event unsignedParams socket = do
   let Just term = socketGet modelKey socket
   let MkRaw modelData = (erlUnsafeCast (Raw model) term)
-  newModelData <- update event modelData
+  newModelData <- update event unsignedParams modelData
   let newSocket = socketAssign modelKey (MkRaw newModelData) socket
   pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
 
@@ -67,7 +67,7 @@ render view assigns =
 export %inline
 exportPhoenixLiveView :
   (init : IO model) ->
-  (update : String -> model -> IO model) ->
+  (update : String -> ErlTerm -> model -> IO model) ->
   (view : model -> View) ->
   ErlExports
 exportPhoenixLiveView init update view =

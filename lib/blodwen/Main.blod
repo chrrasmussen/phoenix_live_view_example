@@ -7,9 +7,9 @@ Model = Int
 init : IO Model
 init = pure 0
 
-update : String -> Model -> IO Model
-update "inc" model = pure $ model + 1
-update "dec" model = pure $ model - 1
+update : String -> ErlTerm -> Model -> IO Model
+update "inc" params model = pure $ model + 1
+update "dec" params model = pure $ model - 1
 
 view : Model -> View
 view model =
