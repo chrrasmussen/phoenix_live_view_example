@@ -42,19 +42,19 @@ socketGet key socket = do
 modelKey : ErlAtom
 modelKey = MkErlAtom "blodwen_model"
 
-mount : IO model -> ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
+mount : IO model -> ErlTerm -> ErlTerm -> IO ErlTerm
 mount init session socket = do
   modelData <- init
   let newSocket = socketAssign modelKey (MkRaw modelData) socket
-  pure $ MkErlTuple2 (MkErlAtom "ok") newSocket
+  pure $ cast $ MkErlTuple2 (MkErlAtom "ok") newSocket
 
-handleEvent : (String -> ErlTerm -> model -> IO model) -> String -> ErlTerm -> ErlTerm -> IO (ErlTuple2 ErlAtom ErlTerm)
+handleEvent : (String -> ErlTerm -> model -> IO model) -> String -> ErlTerm -> ErlTerm -> IO ErlTerm
 handleEvent update event unsignedParams socket = do
   let Just term = socketGet modelKey socket
   let MkRaw modelData = (erlUnsafeCast (Raw model) term)
   newModelData <- update event unsignedParams modelData
   let newSocket = socketAssign modelKey (MkRaw newModelData) socket
-  pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
+  pure $ cast $ MkErlTuple2 (MkErlAtom "noreply") newSocket
 
 handleInfo : (ErlTerm -> model -> IO model) -> ErlTerm -> ErlTerm -> IO ErlTerm
 handleInfo infoHandler msg socket = do
