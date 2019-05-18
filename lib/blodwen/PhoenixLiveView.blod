@@ -22,14 +22,6 @@ socketGet key socket = do
   unsafeLookup key ErlTerm assigns
 
 
-public export
-record PhoenixLiveView model where
-  constructor MkPhoenixLiveView
-  init : IO model
-  update : String -> model -> IO model
-  view : model -> ErlTerm
-
-
 modelKey : ErlAtom
 modelKey = MkErlAtom "blodwen_model"
 
@@ -54,8 +46,12 @@ render view assigns =
 
 
 export %inline
-exportPhoenixLiveView : PhoenixLiveView model -> ErlExports
-exportPhoenixLiveView (MkPhoenixLiveView init update view) =
+exportPhoenixLiveView :
+  (init : IO model) ->
+  (update : String -> model -> IO model) ->
+  (view : model -> ErlTerm) ->
+  ErlExports
+exportPhoenixLiveView init update view =
   Fun "mount" (MkErlIO2 (mount init)) <+>
     Fun "handle_event" (MkErlIO3 (handleEvent update)) <+>
     Fun "render" (MkErlFun1 (render view))

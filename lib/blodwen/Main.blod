@@ -2,20 +2,19 @@ import ErlangPrelude
 import PhoenixLiveView
 
 
-%inline
-counter : PhoenixLiveView Int
-counter =
-  MkPhoenixLiveView
-    (pure 0)
-    (\event, model =>
-      case event of
-        "inc" => pure $ model + 1
-        "dec" => pure $ model - 1
-    )
-    (\model =>
-      let assigns = insert (MkErlAtom "val") model empty
-      in renderTemplate "Elixir.DemoWeb.BlodwenCounterView" "index.html" assigns)
+init : IO Int
+init = pure 0
+
+update : String -> Int -> IO Int
+update "inc" model = pure $ model + 1
+update "dec" model = pure $ model - 1
+
+view : Int -> ErlTerm
+view model =
+  let assigns = insert (MkErlAtom "val") model empty
+  in renderTemplate "Elixir.DemoWeb.BlodwenCounterView" "index.html" assigns
+
 
 exports : ErlExports
 exports =
-  exportPhoenixLiveView counter
+  exportPhoenixLiveView init update view
