@@ -6,9 +6,19 @@ import ErlangPrelude
 -- RENDER
 
 export
-renderTemplate : String -> String -> ErlMap -> ErlTerm
-renderTemplate viewModule templateName assigns = unsafePerformIO $
-  erlCall viewModule "render" [templateName, assigns]
+data View : Type where
+
+viewToErlTerm : View -> ErlTerm
+viewToErlTerm x = believe_me x
+
+erlTermToView : ErlTerm -> View
+erlTermToView x = believe_me x
+
+export
+renderTemplate : String -> String -> ErlMap -> View
+renderTemplate viewModule templateName assigns = unsafePerformIO $ do
+  term <- erlCall viewModule "render" [templateName, assigns]
+  pure $ erlTermToView term
 
 
 -- HELPERS
@@ -46,10 +56,10 @@ handleEvent update event unsignedParams socket = do
   let newSocket = socketAssign modelKey (MkRaw newModelData) socket
   pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
 
-render : (model -> ErlTerm) -> ErlMap -> ErlTerm
+render : (model -> View) -> ErlMap -> ErlTerm
 render view assigns =
   let Just (MkRaw modelData) = unsafeLookup modelKey (Raw model) assigns
-  in view modelData
+  in viewToErlTerm (view modelData)
 
 
 -- EXPORT
@@ -58,7 +68,7 @@ export %inline
 exportPhoenixLiveView :
   (init : IO model) ->
   (update : String -> model -> IO model) ->
-  (view : model -> ErlTerm) ->
+  (view : model -> View) ->
   ErlExports
 exportPhoenixLiveView init update view =
   Fun "mount" (MkErlIO2 (mount init)) <+>

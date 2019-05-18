@@ -9,7 +9,7 @@ update : String -> Int -> IO Int
 update "inc" model = pure $ model + 1
 update "dec" model = pure $ model - 1
 
-view : Int -> ErlTerm
+view : Int -> View
 view model =
   let assigns = insert (MkErlAtom "val") model empty
   in renderTemplate "Elixir.DemoWeb.BlodwenCounterView" "index.html" assigns
