@@ -56,6 +56,14 @@ handleEvent update event unsignedParams socket = do
   let newSocket = socketAssign modelKey (MkRaw newModelData) socket
   pure $ MkErlTuple2 (MkErlAtom "noreply") newSocket
 
+handleInfo : (ErlTerm -> model -> IO model) -> ErlTerm -> ErlTerm -> IO ErlTerm
+handleInfo infoHandler msg socket = do
+  let Just term = socketGet modelKey socket
+  let MkRaw modelData = erlUnsafeCast (Raw model) term
+  newModelData <- infoHandler msg modelData
+  let newSocket = socketAssign modelKey (MkRaw newModelData) socket
+  pure $ cast $ MkErlTuple2 (MkErlAtom "noreply") newSocket
+
 render : (model -> View) -> ErlMap -> ErlTerm
 render view assigns =
   let Just (MkRaw modelData) = unsafeLookup modelKey (Raw model) assigns
@@ -69,8 +77,10 @@ exportPhoenixLiveView :
   (init : IO model) ->
   (update : String -> ErlTerm -> model -> IO model) ->
   (view : model -> View) ->
+  (handleInfo : ErlTerm -> model -> IO model) ->
   ErlExports
-exportPhoenixLiveView init update view =
+exportPhoenixLiveView init update view infoHandler =
   Fun "mount" (MkErlIO2 (mount init)) <+>
     Fun "handle_event" (MkErlIO3 (handleEvent update)) <+>
+    Fun "handle_info" (MkErlIO2 (handleInfo infoHandler)) <+>
     Fun "render" (MkErlFun1 (render view))
