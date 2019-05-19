@@ -10,6 +10,13 @@ namespace Maps
   fromList [] = empty
   fromList ((k, v) :: xs) = insert k v (fromList xs)
 
+namespace Concurrency
+  export
+  erlSendAfter : ErlType a => (ms : Int) -> ErlPid -> a -> IO ()
+  erlSendAfter delay receiver value = do
+    erlCall "erlang" "send_after" [delay, receiver, value]
+    pure ()
+
 Cast Nat Int where
   cast Z = 0
   cast (S k) = 1 + cast k

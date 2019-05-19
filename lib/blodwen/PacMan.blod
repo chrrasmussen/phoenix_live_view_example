@@ -64,8 +64,8 @@ boardBlocks widthFactor =
 
 -- GAME
 
-tick : Int
-tick = 200
+tickInterval : Int
+tickInterval = 200
 
 data Direction = Up | Right | Down | Left
 
@@ -88,6 +88,14 @@ arrowKeyToDirection "ArrowUp" = Just Up
 arrowKeyToDirection "ArrowRight" = Just Right
 arrowKeyToDirection _ = Nothing
 
+tickMsg : ErlAtom
+tickMsg = MkErlAtom "tick"
+
+scheduleTick : IO ()
+scheduleTick = do
+  self <- erlSelf
+  erlSendAfter tickInterval self tickMsg
+
 
 -- PHOENIX LIVE VIEW
 
@@ -95,7 +103,9 @@ Model : Type
 Model = GameState
 
 init : IO Model
-init = pure (MkGameState Right 1 1)
+init = do
+  scheduleTick
+  pure (MkGameState Right 1 1)
 
 update : String -> ErlTerm -> Model -> IO Model
 update "keydown" params model = do
@@ -115,8 +125,24 @@ view model =
         |> insert (MkErlAtom "blocks") (boardBlocks blockSize)
   in renderTemplate "Elixir.DemoWeb.BlodwenPacmanView" "index.html" assigns
 
+data Msg
+  = Tick
+  | Unknown
+
+runTick : GameState -> GameState
+runTick gameState =
+  gameState
+
 handleInfo : ErlTerm -> Model -> IO Model
-handleInfo msg model = pure model
+handleInfo msg model = do
+  let parsedMsg = erlCase Unknown [map (const Tick) (MExact tickMsg)] msg
+  case parsedMsg of
+    Tick => do
+      scheduleTick
+      pure (runTick model)
+    Unknown =>
+      pure model
+
 
 exports : ErlExports
 exports =
