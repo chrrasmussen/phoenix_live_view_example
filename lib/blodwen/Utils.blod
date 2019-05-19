@@ -4,12 +4,6 @@ import ErlangPrelude
 
 -- Missing functions in Prelude/ErlangPrelude
 
-namespace Maps
-  export
-  fromList : (ErlType key, ErlType value) => List (key, value) -> ErlMap
-  fromList [] = empty
-  fromList ((k, v) :: xs) = insert k v (fromList xs)
-
 namespace Concurrency
   export
   erlSendAfter : ErlType a => (ms : Int) -> ErlPid -> a -> IO ()

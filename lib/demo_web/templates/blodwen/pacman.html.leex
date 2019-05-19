@@ -12,7 +12,7 @@
     <div class="pacman-top" style="width: <%= @width %>px; height: <%= @width / 2 %>px;"></div>
     <div class="pacman-bottom" style="width: <%= @width %>px; height: <%= @width / 2 %>px;"></div>
   </div>
-  <%= for {_, block} <- @blocks do %>
+  <%= for block <- @blocks do %>
     <div class="block <%= block.type %>"
         style="
           left: <%= block.x %>px;
