@@ -5,6 +5,9 @@ import Data.List
 import Control.Pipeline
 import Utils
 
+
+-- BOARD
+
 data Block = Wall | Empty
 
 W : Block
@@ -32,6 +35,9 @@ indexedBoard =
   zip (range 0 (minus rows 1))
     (map (zip (range 0 (minus cols 1))) board)
 
+
+-- BOARD VIEW
+
 blockSize : Double
 blockSize = 25
 
@@ -55,11 +61,27 @@ boardBlocks widthFactor =
             |> insert (MkErlAtom "width") widthFactor
       in (MkErlTuple2 (cast col) (cast row), blockData)
 
+
+-- GAME
+
+tick : Int
+tick = 200
+
+
+record GameState where
+  constructor MkGameState
+  rotation : Int
+  x : Nat
+  y : Nat
+
+
+-- PHOENIX LIVE VIEW
+
 Model : Type
-Model = Int
+Model = GameState
 
 init : IO Model
-init = pure 0
+init = pure (MkGameState 0 1 1)
 
 update : String -> ErlTerm -> Model -> IO Model
 update _ params model = pure model
@@ -68,9 +90,9 @@ view : Model -> View
 view model =
   let assigns =
       Maps.empty
-        |> insert (MkErlAtom "rotation") 0
-        |> insert (MkErlAtom "x") (1 * blockSize)
-        |> insert (MkErlAtom "y") (1 * blockSize)
+        |> insert (MkErlAtom "rotation") (rotation model)
+        |> insert (MkErlAtom "x") (cast (x model) * blockSize)
+        |> insert (MkErlAtom "y") (cast (y model) * blockSize)
         |> insert (MkErlAtom "width") blockSize
         |> insert (MkErlAtom "blocks") (boardBlocks blockSize)
   in renderTemplate "Elixir.DemoWeb.BlodwenPacmanView" "index.html" assigns
