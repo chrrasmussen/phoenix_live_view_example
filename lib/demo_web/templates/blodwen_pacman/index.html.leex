@@ -1,1 +1,25 @@
-Pacman
+<div class="game-container">
+  <div phx-keydown="keydown"
+      phx-target="window"
+      class="pacman"
+      style="
+        transform: rotate(<%= @rotation %>deg);
+        left: <%= @x %>px;
+        top: <%= @y %>px;
+        width: <%= @width %>px;
+        height: <%= @width %>px;
+      ">
+    <div class="pacman-top" style="width: <%= @width %>px; height: <%= @width / 2 %>px;"></div>
+    <div class="pacman-bottom" style="width: <%= @width %>px; height: <%= @width / 2 %>px;"></div>
+  </div>
+  <%= for {_, block} <- @blocks do %>
+    <div class="block <%= block.type %>"
+        style="
+          left: <%= block.x %>px;
+          top: <%= block.y %>px;
+          width: <%= block.width %>px;
+          height: <%= block.width %>px;
+        ">
+    </div>
+  <% end %>
+</div>

@@ -1,5 +1,30 @@
 import ErlangPrelude
 import PhoenixLiveView
+import Data.List
+import Control.Pipeline
+
+data Block = Wall | Empty
+
+W : Block
+W = Wall
+
+E : Block
+E = Empty
+
+board : List (List Block)
+board =
+  [ [W, W, W, W]
+  , [W, E, E, W]
+  , [W, E, E, W]
+  , [W, W, W, W]
+  ]
+
+rows : Nat
+rows = length board
+
+cols : Nat
+cols = maybe 0 length (head' board)
+
 
 Model : Type
 Model = Int
@@ -12,7 +37,13 @@ update _ params model = pure model
 
 view : Model -> View
 view model =
-  let assigns = Maps.empty
+  let assigns =
+      Maps.empty
+        |> insert (MkErlAtom "rotation") 0
+        |> insert (MkErlAtom "x") 0
+        |> insert (MkErlAtom "y") 0
+        |> insert (MkErlAtom "width") 0
+        |> insert (MkErlAtom "blocks") Maps.empty
   in renderTemplate "Elixir.DemoWeb.BlodwenPacmanView" "index.html" assigns
 
 handleInfo : ErlTerm -> Model -> IO Model
