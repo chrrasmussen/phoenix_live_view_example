@@ -1,7 +1,9 @@
 import ErlangPrelude
 import PhoenixLiveView
+import Data.Nat
 import Data.List
 import Control.Pipeline
+import Utils
 
 data Block = Wall | Empty
 
@@ -25,6 +27,33 @@ rows = length board
 cols : Nat
 cols = maybe 0 length (head' board)
 
+indexedBoard : List (Nat, List (Nat, Block))
+indexedBoard =
+  zip (range 0 (minus rows 1))
+    (map (zip (range 0 (minus cols 1))) board)
+
+blockSize : Double
+blockSize = 25
+
+blockType : Block -> ErlAtom
+blockType Wall = MkErlAtom "wall"
+blockType Empty = MkErlAtom "empty"
+
+boardBlocks : Double -> ErlMap
+boardBlocks widthFactor =
+  indexedBoard
+    |> concatMap (\row => map (\col => blockEntry (fst row) (fst col) (snd col)) (Builtin.snd row))
+    |> fromList
+  where
+    blockEntry : Nat -> Nat -> Block -> (ErlTuple2 Int Int, ErlMap)
+    blockEntry row col block =
+      let blockData =
+          Maps.empty
+            |> insert (MkErlAtom "type") (blockType block)
+            |> insert (MkErlAtom "x") (cast col * widthFactor)
+            |> insert (MkErlAtom "y") (cast row * widthFactor)
+            |> insert (MkErlAtom "width") widthFactor
+      in (MkErlTuple2 (cast col) (cast row), blockData)
 
 Model : Type
 Model = Int
@@ -40,10 +69,10 @@ view model =
   let assigns =
       Maps.empty
         |> insert (MkErlAtom "rotation") 0
-        |> insert (MkErlAtom "x") 0
-        |> insert (MkErlAtom "y") 0
-        |> insert (MkErlAtom "width") 0
-        |> insert (MkErlAtom "blocks") Maps.empty
+        |> insert (MkErlAtom "x") (1 * blockSize)
+        |> insert (MkErlAtom "y") (1 * blockSize)
+        |> insert (MkErlAtom "width") blockSize
+        |> insert (MkErlAtom "blocks") (boardBlocks blockSize)
   in renderTemplate "Elixir.DemoWeb.BlodwenPacmanView" "index.html" assigns
 
 handleInfo : ErlTerm -> Model -> IO Model

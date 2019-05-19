@@ -1,0 +1,18 @@
+module Utils
+
+import ErlangPrelude
+
+-- Missing functions in Prelude/ErlangPrelude
+
+namespace Maps
+  export
+  fromList : (ErlType key, ErlType value) => List (key, value) -> ErlMap
+  fromList [] = empty
+  fromList ((k, v) :: xs) = insert k v (fromList xs)
+
+Cast Nat Int where
+  cast Z = 0
+  cast (S k) = 1 + cast k
+
+Cast Nat Double where
+  cast x = cast (cast {to=Int} x)
