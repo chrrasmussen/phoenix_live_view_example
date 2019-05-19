@@ -1,0 +1,23 @@
+import ErlangPrelude
+import PhoenixLiveView
+
+Model : Type
+Model = Int
+
+init : IO Model
+init = pure 0
+
+update : String -> ErlTerm -> Model -> IO Model
+update _ params model = pure model
+
+view : Model -> View
+view model =
+  let assigns = Maps.empty
+  in renderTemplate "Elixir.DemoWeb.BlodwenPacmanView" "index.html" assigns
+
+handleInfo : ErlTerm -> Model -> IO Model
+handleInfo msg model = pure model
+
+exports : ErlExports
+exports =
+  exportPhoenixLiveView init update view handleInfo
