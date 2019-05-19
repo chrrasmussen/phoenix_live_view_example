@@ -81,6 +81,7 @@ rotation Left = 180
 
 record GameState where
   constructor MkGameState
+  hasStarted : Bool
   heading : Direction
   x : Nat
   y : Nat
@@ -121,14 +122,15 @@ nextPosition (x, y) direction =
     nextPosition' Down = (x, y + 1)
     nextPosition' Left = (minus x 1, y)
 
-
 runTick : GameState -> GameState
-runTick gameState@(MkGameState heading x y) =
-  let Just newPosition = nextPosition (x, y) heading
+runTick gameState@(MkGameState False _ _ _) =
+  gameState
+runTick gameState@(MkGameState True heading' x' y') =
+  let Just newPosition = nextPosition (x', y') heading'
     | _ => gameState
   in let Just Empty = blockAtPosition (fst newPosition, snd newPosition)
     | _ => gameState
-  in MkGameState heading (fst newPosition) (snd newPosition)
+  in record { heading = heading', x = fst newPosition, y = snd newPosition } gameState
 
 
 -- PHOENIX LIVE VIEW
@@ -139,13 +141,13 @@ Model = GameState
 init : IO Model
 init = do
   scheduleTick
-  pure (MkGameState Right 1 1)
+  pure (MkGameState False Right 1 1)
 
 update : String -> ErlTerm -> Model -> IO Model
 update "keydown" params model = do
   let Just direction = erlTermToString params >>= arrowKeyToDirection
     | _ => pure model
-  pure (the GameState (record { heading = direction } model))
+  pure (the GameState (record { hasStarted = True, heading = direction } model))
 update _ _ model = pure model
 
 view : Model -> View
