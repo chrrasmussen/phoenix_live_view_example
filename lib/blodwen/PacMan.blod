@@ -158,7 +158,7 @@ view model =
         |> insert (MkErlAtom "y") (cast (y model) * blockSize)
         |> insert (MkErlAtom "width") blockSize
         |> insert (MkErlAtom "blocks") (boardBlocks blockSize)
-  in renderTemplate "Elixir.DemoWeb.BlodwenPacmanView" "index.html" assigns
+  in renderTemplate "Elixir.DemoWeb.BlodwenView" "pacman.html" assigns
 
 data Msg
   = Tick

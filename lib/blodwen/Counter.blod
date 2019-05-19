@@ -14,7 +14,7 @@ update "dec" params model = pure $ model - 1
 view : Model -> View
 view model =
   let assigns = insert (MkErlAtom "val") model empty
-  in renderTemplate "Elixir.DemoWeb.BlodwenCounterView" "index.html" assigns
+  in renderTemplate "Elixir.DemoWeb.BlodwenView" "counter.html" assigns
 
 exports : ErlExports
 exports =
