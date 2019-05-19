@@ -8,7 +8,7 @@ defmodule Demo.Mixfile do
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
       blodwen_entrypoints: [
-        {DemoWeb.BlodwenCounterLive, "lib/blodwen", "Main.blod", "exports"},
+        {DemoWeb.BlodwenCounterLive, "lib/blodwen", "Counter.blod", "exports"},
         {DemoWeb.BlodwenPacmanLive, "lib/blodwen", "PacMan.blod", "exports"}
       ],
       compilers: [:blodwen, :phoenix, :gettext] ++ Mix.compilers(),
