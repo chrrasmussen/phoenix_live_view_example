@@ -5,7 +5,7 @@
 
 <section class="row">
   <article class="column">
-    <h4>LiveView Examples</h4>
+    <h4>LiveView Examples (Elixir)</h4>
     <ul>
       <li><%= link "Thermostat", to: Routes.live_path(@conn, DemoWeb.ThermostatLive) %></li>
       <li><%= link "Snake", to: Routes.page_path(@conn, :snake) %></li>
@@ -18,9 +18,13 @@
       <li><%= link "Pacman", to: Routes.live_path(@conn, DemoWeb.PacmanLive) %></li>
       <li><%= link "Rainbow", to: Routes.live_path(@conn, DemoWeb.RainbowLive) %></li>
       <li><%= link "Counter", to: Routes.live_path(@conn, DemoWeb.CounterLive) %></li>
-      <li><%= link "Blodwen Counter", to: Routes.live_path(@conn, DemoWeb.BlodwenCounterLive) %></li>
       <li><%= link "Top", to: Routes.live_path(@conn, DemoWeb.TopLive) %></li>
       <li><%= link "Presence Example", to: Routes.live_path(@conn, DemoWeb.UserLive.PresenceIndex, "user#{System.unique_integer([:positive])}") %></li>
+    </ul>
+    <h4>LiveView Examples (Blodwen)</h4>
+    <ul>
+      <li><%= link "Pacman", to: Routes.live_path(@conn, DemoWeb.BlodwenPacmanLive) %></li>
+      <li><%= link "Counter", to: Routes.live_path(@conn, DemoWeb.BlodwenCounterLive) %></li>
     </ul>
   </article>
 </section>
