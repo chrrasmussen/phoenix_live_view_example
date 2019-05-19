@@ -67,12 +67,26 @@ boardBlocks widthFactor =
 tick : Int
 tick = 200
 
+data Direction = Up | Right | Down | Left
+
+rotation : Direction -> Int
+rotation Up = -90
+rotation Right = 0
+rotation Down = 90
+rotation Left = 180
 
 record GameState where
   constructor MkGameState
-  rotation : Int
+  heading : Direction
   x : Nat
   y : Nat
+
+arrowKeyToDirection : String -> Maybe Direction
+arrowKeyToDirection "ArrowLeft" = Just Left
+arrowKeyToDirection "ArrowDown" = Just Down
+arrowKeyToDirection "ArrowUp" = Just Up
+arrowKeyToDirection "ArrowRight" = Just Right
+arrowKeyToDirection _ = Nothing
 
 
 -- PHOENIX LIVE VIEW
@@ -81,16 +95,20 @@ Model : Type
 Model = GameState
 
 init : IO Model
-init = pure (MkGameState 0 1 1)
+init = pure (MkGameState Right 1 1)
 
 update : String -> ErlTerm -> Model -> IO Model
-update _ params model = pure model
+update "keydown" params model = do
+  let Just direction = erlTermToString params >>= arrowKeyToDirection
+    | _ => pure model
+  pure (the GameState (record { heading = direction } model))
+update _ _ model = pure model
 
 view : Model -> View
 view model =
   let assigns =
       Maps.empty
-        |> insert (MkErlAtom "rotation") (rotation model)
+        |> insert (MkErlAtom "rotation") (rotation (heading model))
         |> insert (MkErlAtom "x") (cast (x model) * blockSize)
         |> insert (MkErlAtom "y") (cast (y model) * blockSize)
         |> insert (MkErlAtom "width") blockSize
