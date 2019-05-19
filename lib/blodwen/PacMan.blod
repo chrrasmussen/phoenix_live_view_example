@@ -111,15 +111,15 @@ isValidPosition (x, y) =
 
 nextPosition : (Nat, Nat) -> Direction -> Maybe (Nat, Nat)
 nextPosition (x, y) direction =
-  (if isValidPosition (nextPosition_ direction)
-    then Just (nextPosition_ direction)
+  (if isValidPosition (nextPosition' direction)
+    then Just (nextPosition' direction)
     else Nothing)
   where
-    nextPosition_ : Direction -> (Nat, Nat)
-    nextPosition_ Up = (x, minus y 1)
-    nextPosition_ Right = (x + 1, y)
-    nextPosition_ Down = (x, y + 1)
-    nextPosition_ Left = (minus x 1, y)
+    nextPosition' : Direction -> (Nat, Nat)
+    nextPosition' Up = (x, minus y 1)
+    nextPosition' Right = (x + 1, y)
+    nextPosition' Down = (x, y + 1)
+    nextPosition' Left = (minus x 1, y)
 
 
 runTick : GameState -> GameState
