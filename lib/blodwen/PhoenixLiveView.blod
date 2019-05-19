@@ -70,6 +70,12 @@ render view assigns =
   in viewToErlTerm (view modelData)
 
 
+-- DEFAULT HANDLERS
+
+skipHandleInfo : ErlTerm -> model -> IO model
+skipHandleInfo msg model = pure model
+
+
 -- EXPORT
 
 export %inline

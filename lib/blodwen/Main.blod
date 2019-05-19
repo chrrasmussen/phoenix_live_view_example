@@ -16,9 +16,6 @@ view model =
   let assigns = insert (MkErlAtom "val") model empty
   in renderTemplate "Elixir.DemoWeb.BlodwenCounterView" "index.html" assigns
 
-handleInfo : ErlTerm -> Model -> IO Model
-handleInfo msg model = pure $ model
-
 exports : ErlExports
 exports =
-  exportPhoenixLiveView init update view handleInfo
+  exportPhoenixLiveView init update view skipHandleInfo
