@@ -48,18 +48,18 @@ blockType Empty = MkErlAtom "empty"
 boardBlocks : Double -> ErlMap
 boardBlocks widthFactor =
   indexedBoard
-    |> concatMap (\row => map (\col => blockEntry (fst row) (fst col) (snd col)) (Builtin.snd row))
+    |> concatMap (\row => map (\col => blockEntry (fst col, fst row) (snd col)) (Builtin.snd row))
     |> fromList
   where
-    blockEntry : Nat -> Nat -> Block -> (ErlTuple2 Int Int, ErlMap)
-    blockEntry row col block =
+    blockEntry : (Nat, Nat) -> Block -> (ErlTuple2 Int Int, ErlMap)
+    blockEntry (x, y) block =
       let blockData =
           Maps.empty
             |> insert (MkErlAtom "type") (blockType block)
-            |> insert (MkErlAtom "x") (cast col * widthFactor)
-            |> insert (MkErlAtom "y") (cast row * widthFactor)
+            |> insert (MkErlAtom "x") (cast x * widthFactor)
+            |> insert (MkErlAtom "y") (cast y * widthFactor)
             |> insert (MkErlAtom "width") widthFactor
-      in (MkErlTuple2 (cast col) (cast row), blockData)
+      in (MkErlTuple2 (cast y) (cast x), blockData)
 
 
 -- GAME
@@ -96,6 +96,36 @@ scheduleTick = do
   self <- erlSelf
   erlSendAfter tickInterval self tickMsg
 
+blockAtPosition : (Nat, Nat) -> Maybe Block
+blockAtPosition (x, y) = do
+  row <- index' y board
+  index' x row
+
+isValidPosition : (Nat, Nat) -> Bool
+isValidPosition (x, y) =
+  x < cols && y < rows
+
+nextPosition : (Nat, Nat) -> Direction -> Maybe (Nat, Nat)
+nextPosition (x, y) direction =
+  (if isValidPosition (nextPosition_ direction)
+    then Just (nextPosition_ direction)
+    else Nothing)
+  where
+    nextPosition_ : Direction -> (Nat, Nat)
+    nextPosition_ Up = (x, minus y 1)
+    nextPosition_ Right = (x + 1, y)
+    nextPosition_ Down = (x, y + 1)
+    nextPosition_ Left = (minus x 1, y)
+
+
+runTick : GameState -> GameState
+runTick gameState@(MkGameState heading x y) =
+  let Just newPosition = nextPosition (x, y) heading
+    | _ => gameState
+  in let Just Empty = blockAtPosition (fst newPosition, snd newPosition)
+    | _ => gameState
+  in MkGameState heading (fst newPosition) (snd newPosition)
+
 
 -- PHOENIX LIVE VIEW
 
@@ -128,10 +158,6 @@ view model =
 data Msg
   = Tick
   | Unknown
-
-runTick : GameState -> GameState
-runTick gameState =
-  gameState
 
 handleInfo : ErlTerm -> Model -> IO Model
 handleInfo msg model = do
