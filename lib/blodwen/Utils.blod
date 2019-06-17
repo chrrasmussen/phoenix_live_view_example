@@ -1,8 +1,8 @@
 module Utils
 
-import ErlangPrelude
+import Erlang.Prelude
 
--- Missing functions in Prelude/ErlangPrelude
+-- Missing functions in Prelude/Erlang.Prelude
 
 namespace Concurrency
   export

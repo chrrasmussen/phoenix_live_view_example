@@ -1,4 +1,4 @@
-import ErlangPrelude
+import Erlang.Prelude
 import PhoenixLiveView
 
 Model : Type

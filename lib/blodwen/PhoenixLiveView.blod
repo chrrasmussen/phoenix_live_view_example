@@ -1,6 +1,6 @@
 module PhoenixLiveView
 
-import ErlangPrelude
+import Erlang.Prelude
 
 
 -- RENDER
