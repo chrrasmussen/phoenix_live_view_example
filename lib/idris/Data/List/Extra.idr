@@ -12,13 +12,6 @@ index' 0 (x :: _) = Just x
 index' (S k) (_ :: xs) = index' k xs
 
 export
-range : Nat -> Nat -> List Nat
-range from to =
-  if from <= to
-    then from :: range (S from) to
-    else []
-
-export
 zipWith : (a -> b -> c) -> List a -> List b -> List c
 zipWith func [] _ = []
 zipWith func _ [] = []

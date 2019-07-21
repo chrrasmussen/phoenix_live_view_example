@@ -38,8 +38,8 @@ cols = maybe 0 length (head' board)
 
 indexedBoard : List (Nat, List (Nat, Block))
 indexedBoard =
-  zip (range 0 (minus rows 1))
-    (map (zip (range 0 (minus cols 1))) board)
+  zip [0..minus rows 1]
+    (map (zip [0..minus cols 1]) board)
 
 
 -- BOARD VIEW
