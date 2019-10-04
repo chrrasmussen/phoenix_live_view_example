@@ -179,4 +179,4 @@ handleInfo msg model = do
 
 exports : ErlExports
 exports =
-  exportPhoenixLiveView init update view handleInfo
+  exportPhoenixLiveView "Elixir.DemoWeb.IdrisPacmanLive" init update view handleInfo

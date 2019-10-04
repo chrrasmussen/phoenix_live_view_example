@@ -79,15 +79,21 @@ skipHandleInfo msg model = pure model
 
 -- EXPORT
 
+liveDefinition : String -> IO ErlTerm
+liveDefinition moduleName =
+  erlCall "Elixir.Phoenix.LiveView.View" "live_definition" [MkErlAtom moduleName, MkErlAtom "view", the ErlNil Nil]
+
 export %inline
 exportPhoenixLiveView :
+  String ->
   (init : IO model) ->
   (update : String -> ErlTerm -> model -> IO model) ->
   (view : model -> View) ->
   (handleInfo : ErlTerm -> model -> IO model) ->
   ErlExports
-exportPhoenixLiveView init update view infoHandler =
-  Fun "mount" (MkErlIO2 (mount init)) <+>
+exportPhoenixLiveView moduleName init update view infoHandler =
+  Fun "'__live__'" (MkErlIO0 (liveDefinition moduleName)) <+>
+    Fun "mount" (MkErlIO2 (mount init)) <+>
     Fun "handle_event" (MkErlIO3 (handleEvent update)) <+>
     Fun "handle_info" (MkErlIO2 (handleInfo infoHandler)) <+>
     Fun "render" (MkErlFun1 (render view))
