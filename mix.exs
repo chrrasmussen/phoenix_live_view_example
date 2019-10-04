@@ -7,11 +7,11 @@ defmodule Demo.Mixfile do
       version: "0.1.0",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
-      blodwen_entrypoints: [
-        {DemoWeb.BlodwenCounterLive, "lib/blodwen", "Counter.blod", "exports"},
-        {DemoWeb.BlodwenPacmanLive, "lib/blodwen", "PacMan.blod", "exports"}
+      idris_entrypoints: [
+        {DemoWeb.IdrisCounterLive, "lib/idris", "Counter.idr", "exports"},
+        {DemoWeb.IdrisPacmanLive, "lib/idris", "PacMan.idr", "exports"}
       ],
-      compilers: [:blodwen, :phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:idris, :phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -51,7 +51,7 @@ defmodule Demo.Mixfile do
       {:jason, "~> 1.0"},
       {:cowboy, "~> 2.0"},
       {:calendar, "~> 0.17.5"},
-      {:mix_blodwen, path: "../mix_blodwen_umbrella/apps/mix_blodwen"}
+      {:mix_idris, path: "../mix_idris_umbrella/apps/mix_idris"}
     ]
   end
 

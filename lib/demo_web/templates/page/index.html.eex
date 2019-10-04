@@ -21,10 +21,10 @@
       <li><%= link "Top", to: Routes.live_path(@conn, DemoWeb.TopLive) %></li>
       <li><%= link "Presence Example", to: Routes.live_path(@conn, DemoWeb.UserLive.PresenceIndex, "user#{System.unique_integer([:positive])}") %></li>
     </ul>
-    <h4>LiveView Examples (Blodwen)</h4>
+    <h4>LiveView Examples (Idris 2)</h4>
     <ul>
-      <li><%= link "Pacman", to: Routes.live_path(@conn, DemoWeb.BlodwenPacmanLive) %></li>
-      <li><%= link "Counter", to: Routes.live_path(@conn, DemoWeb.BlodwenCounterLive) %></li>
+      <li><%= link "Pacman", to: Routes.live_path(@conn, DemoWeb.IdrisPacmanLive) %></li>
+      <li><%= link "Counter", to: Routes.live_path(@conn, DemoWeb.IdrisCounterLive) %></li>
     </ul>
   </article>
 </section>

@@ -1,7 +1,0 @@
-module Data.Nat
-
-export
-minus : Nat -> Nat -> Nat
-minus Z right = 0
-minus left Z = left
-minus (S left) (S right) = minus left right

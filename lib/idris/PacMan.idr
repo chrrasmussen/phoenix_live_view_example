@@ -1,7 +1,8 @@
-import Erlang.Prelude
+import Erlang
 import PhoenixLiveView
 import Data.Nat
 import Data.List
+import Data.List.Extra
 import Control.Pipeline
 import Utils
 
@@ -53,7 +54,7 @@ blockType Empty = MkErlAtom "empty"
 boardBlocks : Double -> List ErlMap
 boardBlocks widthFactor =
   indexedBoard
-    |> concatMap (\row => map (\col => blockEntry (fst col, fst row) (snd col)) (Builtin.snd row))
+    |> concatMap (\(rowIndex, rowValue) => map (\(colIndex, colValue) => blockEntry (colIndex, rowIndex) colValue) (rowValue))
   where
     blockEntry : (Nat, Nat) -> Block -> ErlMap
     blockEntry (x, y) block =
@@ -126,11 +127,11 @@ runTick : GameState -> GameState
 runTick gameState@(MkGameState False _ _ _) =
   gameState
 runTick gameState@(MkGameState True heading' x' y') =
-  let Just newPosition = nextPosition (x', y') heading'
+  let Just (newX, newY) = nextPosition (x', y') heading'
     | _ => gameState
-  in let Just Empty = blockAtPosition (fst newPosition, snd newPosition)
+  in let Just Empty = blockAtPosition (newX, newY)
     | _ => gameState
-  in record { heading = heading', x = fst newPosition, y = snd newPosition } gameState
+  in record { heading = heading', x = newX, y = newY } gameState
 
 
 -- PHOENIX LIVE VIEW
@@ -145,7 +146,7 @@ init = do
 
 update : String -> ErlTerm -> Model -> IO Model
 update "keydown" params model = do
-  let Just direction = erlTermToString params >>= arrowKeyToDirection
+  let Just direction = the (Maybe Direction) (erlTermToString params >>= arrowKeyToDirection)
     | _ => pure model
   pure (the GameState (record { hasStarted = True, heading = direction } model))
 update _ _ model = pure model
@@ -159,7 +160,7 @@ view model =
         |> insert (MkErlAtom "y") (cast (y model) * blockSize)
         |> insert (MkErlAtom "width") blockSize
         |> insert (MkErlAtom "blocks") (boardBlocks blockSize)
-  in renderTemplate "Elixir.DemoWeb.BlodwenView" "pacman.html" assigns
+  in renderTemplate "Elixir.DemoWeb.IdrisView" "pacman.html" assigns
 
 data Msg
   = Tick

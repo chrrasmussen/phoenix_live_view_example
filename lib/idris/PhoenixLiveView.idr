@@ -1,6 +1,6 @@
 module PhoenixLiveView
 
-import Erlang.Prelude
+import Erlang
 
 
 -- RENDER
@@ -40,7 +40,7 @@ socketGet key socket = do
 -- LIFE-CYCLE
 
 modelKey : ErlAtom
-modelKey = MkErlAtom "blodwen_model"
+modelKey = MkErlAtom "idris_model"
 
 mount : IO model -> ErlTerm -> ErlTerm -> IO ErlTerm
 mount init session socket = do

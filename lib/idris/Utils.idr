@@ -1,8 +1,6 @@
 module Utils
 
-import Erlang.Prelude
-
--- Missing functions in Prelude/Erlang.Prelude
+import Erlang
 
 namespace Concurrency
   export
@@ -10,10 +8,3 @@ namespace Concurrency
   erlSendAfter delay receiver value = do
     erlCall "erlang" "send_after" [delay, receiver, value]
     pure ()
-
-Cast Nat Int where
-  cast Z = 0
-  cast (S k) = 1 + cast k
-
-Cast Nat Double where
-  cast x = cast (cast {to=Int} x)

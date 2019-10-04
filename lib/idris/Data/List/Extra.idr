@@ -1,9 +1,4 @@
-module Data.List
-
-export
-length : List a -> Nat
-length [] = 0
-length (x :: xs) = 1 + length xs
+module Data.List.Extra
 
 export
 head' : List a -> Maybe a
