@@ -146,7 +146,7 @@ init = do
 
 update : String -> ErlTerm -> Model -> IO Model
 update "keydown" params model = do
-  let Just direction = the (Maybe Direction) (erlTermToString params >>= arrowKeyToDirection)
+  let Just direction = erlCase Nothing [MMapSubset ["key" := MAny] Just] params >>= erlTermToString >>= arrowKeyToDirection
     | _ => pure model
   pure (the GameState (record { hasStarted = True, heading = direction } model))
 update _ _ model = pure model
