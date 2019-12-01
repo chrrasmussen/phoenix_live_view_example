@@ -51,7 +51,7 @@ defmodule Demo.Mixfile do
       {:jason, "~> 1.0"},
       {:cowboy, "~> 2.0"},
       {:calendar, "~> 1.0.0"},
-      {:mix_idris, path: "../mix_idris_umbrella/apps/mix_idris"}
+      {:mix_idris2, path: "../mix_idris_umbrella/apps/mix_idris2"}
     ]
   end
 
