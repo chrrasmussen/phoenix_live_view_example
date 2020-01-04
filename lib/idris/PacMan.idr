@@ -1,3 +1,5 @@
+module PacMan
+
 import Erlang
 import PhoenixLiveView
 import Data.Nat

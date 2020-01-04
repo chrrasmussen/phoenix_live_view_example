@@ -1,3 +1,5 @@
+module Counter
+
 import Erlang
 import PhoenixLiveView
 
