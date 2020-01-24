@@ -23,4 +23,4 @@ view model =
 
 exports : ErlExports
 exports =
-  exportPhoenixLiveView "Elixir.DemoWeb.IdrisCounterLive" init update view skipHandleInfo
+  exportPhoenixLiveView "Elixir.DemoWeb.Idris.Counter" init update view skipHandleInfo

@@ -23,8 +23,8 @@
     </ul>
     <h4>LiveView Examples (Idris 2)</h4>
     <ul>
-      <li><%= link "Pacman", to: Routes.live_path(@conn, DemoWeb.IdrisPacmanLive) %></li>
-      <li><%= link "Counter", to: Routes.live_path(@conn, DemoWeb.IdrisCounterLive) %></li>
+      <li><%= link "Pacman", to: Routes.live_path(@conn, DemoWeb.Idris.PacMan) %></li>
+      <li><%= link "Counter", to: Routes.live_path(@conn, DemoWeb.Idris.Counter) %></li>
     </ul>
   </article>
 </section>
