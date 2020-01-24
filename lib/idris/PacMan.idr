@@ -8,6 +8,8 @@ import Data.List.Extra
 import Control.Pipeline
 import Utils
 
+%cg erlang export exports
+
 
 -- BOARD
 

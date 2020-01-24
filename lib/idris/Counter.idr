@@ -3,6 +3,9 @@ module Counter
 import Erlang
 import PhoenixLiveView
 
+%cg erlang export exports
+
+
 Model : Type
 Model = Int
 
