@@ -11,6 +11,10 @@ defmodule DemoWeb.Router do
     plug :put_layout, {DemoWeb.LayoutView, :app}
   end
 
+  pipeline :bare do
+    plug :put_layout, {DemoWeb.LayoutView, "bare.html"}
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -27,10 +31,6 @@ defmodule DemoWeb.Router do
     live "/image", ImageLive
     live "/pacman", PacmanLive
     live "/rainbow", RainbowLive
-    live "/counter", CounterLive
-    live "/counters", CountersLive
-    live "/idris_counter", IdrisCounterLive
-    live "/idris_pacman", IdrisPacmanLive
     live "/top", TopLive
     live "/presence_users/:name", UserLive.PresenceIndex
 
@@ -44,5 +44,15 @@ defmodule DemoWeb.Router do
     live "/users/:id/edit", UserLive.Edit
 
     resources "/plain/users", UserController
+
+    live "/idris_counter", IdrisCounterLive
+    live "/idris_pacman", IdrisPacmanLive
+  end
+
+  scope "/", DemoWeb do
+    pipe_through [:browser, :bare]
+
+    live "/users-live-layout", UserLive.IndexNav
+    live "/users-live-layout/page/:page", UserLive.IndexNav
   end
 end

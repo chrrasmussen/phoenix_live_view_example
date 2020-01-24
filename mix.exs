@@ -37,8 +37,8 @@ defmodule Demo.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.4.10"},
-      {:phoenix_live_view, "~> 0.3.1"},
+      {:phoenix, "~> 1.4.9"},
+      {:phoenix_live_view, "~> 0.5.1"},
       {:plug_cowboy, "~> 2.0"},
       {:plug, "~> 1.8"},
       {:phoenix_pubsub, "~> 1.1"},
@@ -50,7 +50,7 @@ defmodule Demo.Mixfile do
       {:gettext, "~> 0.17"},
       {:jason, "~> 1.0"},
       {:cowboy, "~> 2.0"},
-      {:calendar, "~> 1.0.0"},
+      {:calendar, "~> 1.0"},
       {:mix_idris2, path: "../mix_idris_umbrella/apps/mix_idris2"}
     ]
   end
