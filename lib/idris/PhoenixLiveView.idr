@@ -81,7 +81,7 @@ skipHandleInfo msg model = pure model
 
 liveDefinition : String -> IO ErlTerm
 liveDefinition moduleName =
-  erlCall "Elixir.Phoenix.LiveView.View" "live_definition" [MkErlAtom moduleName, MkErlAtom "view", the ErlNil Nil]
+  erlCall "Elixir.Phoenix.LiveView" "__live__" [MkErlAtom moduleName, the ErlNil Nil]
 
 export %inline
 exportPhoenixLiveView :
