@@ -45,8 +45,8 @@ defmodule DemoWeb.Router do
 
     resources "/plain/users", UserController
 
-    live "/idris_counter", Idris.Counter
-    live "/idris_pacman", Idris.PacMan
+    live "/idris_counter", IdrisCounterLive
+    live "/idris_pacman", IdrisPacManLive
   end
 
   scope "/", DemoWeb do

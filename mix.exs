@@ -8,8 +8,7 @@ defmodule Demo.Mixfile do
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
       idris_entrypoints: [
-        {DemoWeb.IdrisCounterLive, "lib/idris", "Counter.idr", "exports"},
-        {DemoWeb.IdrisPacmanLive, "lib/idris", "PacMan.idr", "exports"}
+        {DemoWeb.Main, "lib/idris", "Main.idr", "exports"}
       ],
       compilers: [:idris, :phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
