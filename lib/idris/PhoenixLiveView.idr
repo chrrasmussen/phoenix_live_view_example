@@ -42,8 +42,8 @@ socketGet key socket = do
 modelKey : ErlAtom
 modelKey = MkErlAtom "idris_model"
 
-mount : IO model -> ErlTerm -> ErlTerm -> IO ErlTerm
-mount init session socket = do
+mount : IO model -> ErlTerm -> ErlTerm -> ErlTerm -> IO ErlTerm
+mount init params session socket = do
   modelData <- init
   let newSocket = socketAssign modelKey (MkRaw modelData) socket
   pure $ cast $ MkErlTuple2 (MkErlAtom "ok") newSocket
@@ -93,7 +93,7 @@ exportPhoenixLiveView :
   ErlExports
 exportPhoenixLiveView moduleName init update view infoHandler =
   Fun "'__live__'" (MkErlIO0 (liveDefinition moduleName)) <+>
-    Fun "mount" (MkErlIO2 (mount init)) <+>
+    Fun "mount" (MkErlIO3 (mount init)) <+>
     Fun "handle_event" (MkErlIO3 (handleEvent update)) <+>
     Fun "handle_info" (MkErlIO2 (handleInfo infoHandler)) <+>
     Fun "render" (MkErlFun1 (render view))
