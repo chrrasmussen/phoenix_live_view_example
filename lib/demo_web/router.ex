@@ -44,9 +44,13 @@ defmodule DemoWeb.Router do
     live "/users/:id/edit", UserLive.Edit
 
     resources "/plain/users", UserController
+  end
 
-    live "/idris_counter", IdrisCounterLive
-    live "/idris_pacman", IdrisPacManLive
+  scope "/", Idris do
+    pipe_through :browser
+
+    live "/idris_counter", Counter
+    live "/idris_pacman", PacMan
   end
 
   scope "/", DemoWeb do
