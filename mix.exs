@@ -35,19 +35,18 @@ defmodule Demo.Mixfile do
   defp deps do
     [
       {:phoenix, "~> 1.4.9"},
-      {:phoenix_live_view, "~> 0.5.1"},
+      {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"},
       {:plug_cowboy, "~> 2.0"},
       {:plug, "~> 1.8"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
-      {:ecto_sql, "~> 3.0"},
+      {:ecto_sql, "~> 3.3"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.13"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.17"},
       {:jason, "~> 1.0"},
-      {:cowboy, "~> 2.0"},
-      {:calendar, "~> 1.0"},
+      {:nimble_strftime, ">= 0.0.0"},
       {:mix_idris2, path: "../mix_idris_umbrella/apps/mix_idris2"}
     ]
   end
