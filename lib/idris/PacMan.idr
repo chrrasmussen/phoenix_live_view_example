@@ -181,6 +181,6 @@ handleInfo msg model = do
       pure model
 
 
-exports : ErlExports
+exports : ErlExport
 exports =
   exportPhoenixLiveView "Elixir.DemoWeb.Idris.PacMan" init update view handleInfo

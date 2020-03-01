@@ -21,6 +21,6 @@ view model =
   let assigns = insert (MkErlAtom "val") model empty
   in renderTemplate "Elixir.DemoWeb.IdrisView" "counter.html" assigns
 
-exports : ErlExports
+exports : ErlExport
 exports =
   exportPhoenixLiveView "Elixir.DemoWeb.Idris.Counter" init update view skipHandleInfo

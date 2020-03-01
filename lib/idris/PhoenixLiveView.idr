@@ -90,7 +90,7 @@ exportPhoenixLiveView :
   (update : String -> ErlTerm -> model -> IO model) ->
   (view : model -> View) ->
   (handleInfo : ErlTerm -> model -> IO model) ->
-  ErlExports
+  ErlExport
 exportPhoenixLiveView moduleName init update view infoHandler =
   Fun "'__live__'" (MkErlIO0 (liveDefinition moduleName)) <+>
     Fun "mount" (MkErlIO3 (mount init)) <+>
