@@ -17,7 +17,7 @@ erlTermToView x = believe_me x
 export
 renderTemplate : String -> String -> ErlMap -> View
 renderTemplate viewModule templateName assigns = unsafePerformIO $ do
-  term <- erlCall viewModule "render" [templateName, assigns]
+  term <- erlUnsafeCall ErlTerm viewModule "render" [templateName, assigns]
   pure $ erlTermToView term
 
 
@@ -25,11 +25,11 @@ renderTemplate viewModule templateName assigns = unsafePerformIO $ do
 
 socketAssign : (ErlType key, ErlType value) => key -> value -> ErlTerm -> ErlTerm
 socketAssign key value socket = unsafePerformIO $
-  erlCall "Elixir.Phoenix.LiveView" "assign" [socket, key, value]
+  erlUnsafeCall ErlTerm "Elixir.Phoenix.LiveView" "assign" [socket, key, value]
 
 socketUpdate : (ErlType key, ErlType value) => key -> (ErlTerm -> value) -> ErlTerm -> ErlTerm
 socketUpdate key func socket = unsafePerformIO $
-  erlCall "Elixir.Phoenix.LiveView" "update" [socket, key, func]
+  erlUnsafeCall ErlTerm "Elixir.Phoenix.LiveView" "update" [socket, key, func]
 
 socketGet : (ErlType key) => key -> ErlTerm -> Maybe ErlTerm
 socketGet key socket = do
@@ -81,7 +81,7 @@ skipHandleInfo msg model = pure model
 
 liveDefinition : String -> IO ErlTerm
 liveDefinition moduleName =
-  erlCall "Elixir.Phoenix.LiveView" "__live__" [MkErlAtom moduleName, the ErlNil Nil]
+  erlUnsafeCall ErlTerm "Elixir.Phoenix.LiveView" "__live__" [MkErlAtom moduleName, the ErlNil Nil]
 
 export %inline
 exportPhoenixLiveView :
