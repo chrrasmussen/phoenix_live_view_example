@@ -45,7 +45,7 @@ defmodule Demo.Mixfile do
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.3"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 2.14"},
+      {:phoenix_html, "~> 2.14.1"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.17"},
       {:jason, "~> 1.0"},
