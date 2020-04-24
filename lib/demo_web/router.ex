@@ -1,22 +1,24 @@
 defmodule DemoWeb.Router do
   use DemoWeb, :router
+
   import Phoenix.LiveView.Router
+  import Phoenix.LiveDashboard.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
-    plug Phoenix.LiveView.Flash
+    plug :fetch_live_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :put_layout, {DemoWeb.LayoutView, :app}
+    plug :put_root_layout, {DemoWeb.LayoutView, :root}
   end
 
   pipeline :bare do
-    plug :put_layout, {DemoWeb.LayoutView, "bare.html"}
+    plug :put_root_layout, {DemoWeb.LayoutView, :bare}
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
+  pipeline :game do
+    plug :put_root_layout, {DemoWeb.LayoutView, :game}
   end
 
   scope "/", DemoWeb do
@@ -25,7 +27,6 @@ defmodule DemoWeb.Router do
     get "/", PageController, :index
 
     live "/thermostat", ThermostatLive
-    get "/snake", PageController, :snake
     live "/search", SearchLive
     live "/clock", ClockLive
     live "/image", ImageLive
@@ -43,7 +44,15 @@ defmodule DemoWeb.Router do
     live "/users/:id", UserLive.Show
     live "/users/:id/edit", UserLive.Edit
 
-    resources "/plain/users", UserController
+    # If enabling the LiveDashboard in prod,
+    # put it behind proper authentication.
+    live_dashboard "/dashboard", metrics: DemoWeb.Telemetry
+  end
+
+  scope "/", DemoWeb do
+    pipe_through [:browser, :game]
+
+    live "/snake", SnakeLive
   end
 
   scope "/", Idris do
