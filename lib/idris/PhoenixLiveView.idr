@@ -92,8 +92,8 @@ exportPhoenixLiveView :
   (handleInfo : ErlTerm -> model -> IO model) ->
   ErlExport
 exportPhoenixLiveView moduleName init update view infoHandler =
-  Fun "__live__" (MkErlIO0 (liveDefinition moduleName)) <+>
-    Fun "mount" (MkErlIO3 (mount init)) <+>
-    Fun "handle_event" (MkErlIO3 (handleEvent update)) <+>
-    Fun "handle_info" (MkErlIO2 (handleInfo infoHandler)) <+>
+  Fun "__live__" (MkErlIOFun0 (liveDefinition moduleName)) <+>
+    Fun "mount" (MkErlIOFun3 (mount init)) <+>
+    Fun "handle_event" (MkErlIOFun3 (handleEvent update)) <+>
+    Fun "handle_info" (MkErlIOFun2 (handleInfo infoHandler)) <+>
     Fun "render" (MkErlFun1 (render view))
