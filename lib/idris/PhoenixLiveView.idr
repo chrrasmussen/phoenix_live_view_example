@@ -33,8 +33,8 @@ socketUpdate key func socket = unsafePerformIO $
 
 socketGet : (ErlType key) => key -> ErlTerm -> Maybe ErlTerm
 socketGet key socket = do
-  assigns <- unsafeLookup (MkErlAtom "assigns") ErlMap (erlUnsafeCast ErlMap socket)
-  unsafeLookup key ErlTerm assigns
+  assigns <- map (erlUnsafeCast ErlMap) (lookup (MkErlAtom "assigns") any (erlUnsafeCast ErlMap socket))
+  lookup key any assigns
 
 
 -- LIFE-CYCLE
@@ -66,7 +66,7 @@ handleInfo infoHandler msg socket = do
 
 render : (model -> View) -> ErlMap -> ErlTerm
 render view assigns =
-  let Just (MkRaw modelData) = unsafeLookup modelKey (Raw model) assigns
+  let Just (MkRaw modelData) = map (erlUnsafeCast (Raw model)) (lookup modelKey any assigns)
   in viewToErlTerm (view modelData)
 
 

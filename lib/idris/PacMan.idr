@@ -150,7 +150,7 @@ init = do
 
 update : String -> ErlTerm -> Model -> IO Model
 update "keydown" params model = do
-  let Just direction = erlCase Nothing [MMapSubset ["key" := MAny] Just] params >>= erlTermToString >>= arrowKeyToDirection
+  let Just direction = erlDecodeMay (mapEntry "key" any) params >>= erlDecodeMay string >>= arrowKeyToDirection
     | _ => pure model
   pure (the GameState (record { hasStarted = True, heading = direction } model))
 update _ _ model = pure model
@@ -172,7 +172,7 @@ data Msg
 
 handleInfo : ErlTerm -> Model -> IO Model
 handleInfo msg model = do
-  let parsedMsg = erlCase Unknown [map (const Tick) (MExact tickMsg)] msg
+  let parsedMsg = erlDecodeDef Unknown (exact tickMsg *> pure Tick) msg
   case parsedMsg of
     Tick => do
       scheduleTick
