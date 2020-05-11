@@ -33,20 +33,20 @@ socketUpdate key func socket = unsafePerformIO $
 
 socketGet : (ErlType key) => key -> ErlTerm -> Maybe ErlTerm
 socketGet key socket = do
-  assigns <- map (erlUnsafeCast ErlMap) (lookup (MkErlAtom "assigns") any (erlUnsafeCast ErlMap socket))
+  assigns <- map (erlUnsafeCast ErlMap) (lookup (MkAtom "assigns") any (erlUnsafeCast ErlMap socket))
   lookup key any assigns
 
 
 -- LIFE-CYCLE
 
 modelKey : ErlAtom
-modelKey = MkErlAtom "idris_model"
+modelKey = MkAtom "idris_model"
 
 mount : IO model -> ErlTerm -> ErlTerm -> ErlTerm -> IO ErlTerm
 mount init params session socket = do
   modelData <- init
   let newSocket = socketAssign modelKey (MkRaw modelData) socket
-  pure $ cast $ MkErlTuple2 (MkErlAtom "ok") newSocket
+  pure $ cast $ MkTuple2 (MkAtom "ok") newSocket
 
 handleEvent : (String -> ErlTerm -> model -> IO model) -> String -> ErlTerm -> ErlTerm -> IO ErlTerm
 handleEvent update event unsignedParams socket = do
@@ -54,7 +54,7 @@ handleEvent update event unsignedParams socket = do
   let MkRaw modelData = (erlUnsafeCast (Raw model) term)
   newModelData <- update event unsignedParams modelData
   let newSocket = socketAssign modelKey (MkRaw newModelData) socket
-  pure $ cast $ MkErlTuple2 (MkErlAtom "noreply") newSocket
+  pure $ cast $ MkTuple2 (MkAtom "noreply") newSocket
 
 handleInfo : (ErlTerm -> model -> IO model) -> ErlTerm -> ErlTerm -> IO ErlTerm
 handleInfo infoHandler msg socket = do
@@ -62,7 +62,7 @@ handleInfo infoHandler msg socket = do
   let MkRaw modelData = erlUnsafeCast (Raw model) term
   newModelData <- infoHandler msg modelData
   let newSocket = socketAssign modelKey (MkRaw newModelData) socket
-  pure $ cast $ MkErlTuple2 (MkErlAtom "noreply") newSocket
+  pure $ cast $ MkTuple2 (MkAtom "noreply") newSocket
 
 render : (model -> View) -> ErlMap -> ErlTerm
 render view assigns =
@@ -81,7 +81,7 @@ skipHandleInfo msg model = pure model
 
 liveDefinition : String -> IO ErlTerm
 liveDefinition moduleName =
-  erlUnsafeCall ErlTerm "Elixir.Phoenix.LiveView" "__live__" [MkErlAtom moduleName, the ErlNil Nil]
+  erlUnsafeCall ErlTerm "Elixir.Phoenix.LiveView" "__live__" [MkAtom moduleName, the ErlNil Nil]
 
 export %inline
 exportPhoenixLiveView :
@@ -92,8 +92,8 @@ exportPhoenixLiveView :
   (handleInfo : ErlTerm -> model -> IO model) ->
   ErlExport
 exportPhoenixLiveView moduleName init update view infoHandler =
-  Fun "__live__" (MkErlIOFun0 (liveDefinition moduleName)) <+>
-    Fun "mount" (MkErlIOFun3 (mount init)) <+>
-    Fun "handle_event" (MkErlIOFun3 (handleEvent update)) <+>
-    Fun "handle_info" (MkErlIOFun2 (handleInfo infoHandler)) <+>
-    Fun "render" (MkErlFun1 (render view))
+  Fun "__live__" (MkIOFun0 (liveDefinition moduleName)) <+>
+    Fun "mount" (MkIOFun3 (mount init)) <+>
+    Fun "handle_event" (MkIOFun3 (handleEvent update)) <+>
+    Fun "handle_info" (MkIOFun2 (handleInfo infoHandler)) <+>
+    Fun "render" (MkFun1 (render view))

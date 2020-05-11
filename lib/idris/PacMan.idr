@@ -52,8 +52,8 @@ blockSize : Double
 blockSize = 25
 
 blockType : Block -> ErlAtom
-blockType Wall = MkErlAtom "wall"
-blockType Empty = MkErlAtom "empty"
+blockType Wall = MkAtom "wall"
+blockType Empty = MkAtom "empty"
 
 boardBlocks : Double -> List ErlMap
 boardBlocks widthFactor =
@@ -63,11 +63,11 @@ boardBlocks widthFactor =
     blockEntry : (Nat, Nat) -> Block -> ErlMap
     blockEntry (x, y) block =
       let blockData =
-          Maps.empty
-            |> insert (MkErlAtom "type") (blockType block)
-            |> insert (MkErlAtom "x") (cast x * widthFactor)
-            |> insert (MkErlAtom "y") (cast y * widthFactor)
-            |> insert (MkErlAtom "width") widthFactor
+          Map.empty
+            |> insert (MkAtom "type") (blockType block)
+            |> insert (MkAtom "x") (cast x * widthFactor)
+            |> insert (MkAtom "y") (cast y * widthFactor)
+            |> insert (MkAtom "width") widthFactor
       in blockData
 
 
@@ -99,7 +99,7 @@ arrowKeyToDirection "ArrowRight" = Just Right
 arrowKeyToDirection _ = Nothing
 
 tickMsg : ErlAtom
-tickMsg = MkErlAtom "tick"
+tickMsg = MkAtom "tick"
 
 scheduleTick : IO ()
 scheduleTick = do
@@ -158,12 +158,12 @@ update _ _ model = pure model
 view : Model -> View
 view model =
   let assigns =
-      Maps.empty
-        |> insert (MkErlAtom "rotation") (rotation (heading model))
-        |> insert (MkErlAtom "x") (cast (x model) * blockSize)
-        |> insert (MkErlAtom "y") (cast (y model) * blockSize)
-        |> insert (MkErlAtom "width") blockSize
-        |> insert (MkErlAtom "blocks") (boardBlocks blockSize)
+      Map.empty
+        |> insert (MkAtom "rotation") (rotation (heading model))
+        |> insert (MkAtom "x") (cast (x model) * blockSize)
+        |> insert (MkAtom "y") (cast (y model) * blockSize)
+        |> insert (MkAtom "width") blockSize
+        |> insert (MkAtom "blocks") (boardBlocks blockSize)
   in renderTemplate "Elixir.DemoWeb.IdrisView" "pacman.html" assigns
 
 data Msg
