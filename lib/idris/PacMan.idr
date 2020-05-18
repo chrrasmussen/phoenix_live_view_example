@@ -55,12 +55,12 @@ blockType : Block -> ErlAtom
 blockType Wall = MkAtom "wall"
 blockType Empty = MkAtom "empty"
 
-boardBlocks : Double -> List ErlMap
+boardBlocks : Double -> List ErlAnyMap
 boardBlocks widthFactor =
   indexedBoard
     |> concatMap (\(rowIndex, rowValue) => map (\(colIndex, colValue) => blockEntry (colIndex, rowIndex) colValue) (rowValue))
   where
-    blockEntry : (Nat, Nat) -> Block -> ErlMap
+    blockEntry : (Nat, Nat) -> Block -> ErlAnyMap
     blockEntry (x, y) block =
       let blockData =
           Map.empty

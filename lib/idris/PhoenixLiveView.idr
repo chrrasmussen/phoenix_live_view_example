@@ -15,7 +15,7 @@ erlTermToView : ErlTerm -> View
 erlTermToView x = believe_me x
 
 export
-renderTemplate : String -> String -> ErlMap -> View
+renderTemplate : String -> String -> ErlAnyMap -> View
 renderTemplate viewModule templateName assigns = unsafePerformIO $ do
   term <- erlUnsafeCall ErlTerm viewModule "render" [templateName, assigns]
   pure $ erlTermToView term
@@ -33,7 +33,7 @@ socketUpdate key func socket = unsafePerformIO $
 
 socketGet : (ErlType key) => key -> ErlTerm -> Maybe ErlTerm
 socketGet key socket = do
-  assigns <- map (erlUnsafeCast ErlMap) (lookup (MkAtom "assigns") any (erlUnsafeCast ErlMap socket))
+  assigns <- map (erlUnsafeCast ErlAnyMap) (lookup (MkAtom "assigns") any (erlUnsafeCast ErlAnyMap socket))
   lookup key any assigns
 
 
@@ -64,7 +64,7 @@ handleInfo infoHandler msg socket = do
   let newSocket = socketAssign modelKey (MkRaw newModelData) socket
   pure $ cast $ MkTuple2 (MkAtom "noreply") newSocket
 
-render : (model -> View) -> ErlMap -> ErlTerm
+render : (model -> View) -> ErlAnyMap -> ErlTerm
 render view assigns =
   let Just (MkRaw modelData) = map (erlUnsafeCast (Raw model)) (lookup modelKey any assigns)
   in viewToErlTerm (view modelData)
