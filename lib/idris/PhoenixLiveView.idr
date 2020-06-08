@@ -51,6 +51,7 @@ mount init params session socket = do
 handleEvent : (String -> ErlTerm -> model -> IO model) -> String -> ErlTerm -> ErlTerm -> IO ErlTerm
 handleEvent update event unsignedParams socket = do
   let Just term = socketGet modelKey socket
+    | Nothing => pure $ cast $ MkTuple2 (MkAtom "noreply") socket
   let MkRaw modelData = (erlUnsafeCast (Raw model) term)
   newModelData <- update event unsignedParams modelData
   let newSocket = socketAssign modelKey (MkRaw newModelData) socket
@@ -59,15 +60,17 @@ handleEvent update event unsignedParams socket = do
 handleInfo : (ErlTerm -> model -> IO model) -> ErlTerm -> ErlTerm -> IO ErlTerm
 handleInfo infoHandler msg socket = do
   let Just term = socketGet modelKey socket
+    | Nothing => pure $ cast $ MkTuple2 (MkAtom "noreply") socket
   let MkRaw modelData = erlUnsafeCast (Raw model) term
   newModelData <- infoHandler msg modelData
   let newSocket = socketAssign modelKey (MkRaw newModelData) socket
   pure $ cast $ MkTuple2 (MkAtom "noreply") newSocket
 
-render : (model -> View) -> ErlAnyMap -> ErlTerm
-render view assigns =
-  let Just (MkRaw modelData) = map (erlUnsafeCast (Raw model)) (lookup modelKey any assigns)
-  in viewToErlTerm (view modelData)
+render : (model -> View) -> ErlTerm -> ErlTerm
+render view assigns = do
+  let assigns' = erlUnsafeCast (ErlMapSubset [modelKey := Raw model]) assigns
+  let MkRaw modelData = get modelKey assigns'
+  viewToErlTerm (view modelData)
 
 
 -- DEFAULT HANDLERS

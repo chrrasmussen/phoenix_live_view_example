@@ -152,7 +152,7 @@ update : String -> ErlTerm -> Model -> IO Model
 update "keydown" params model = do
   let Just direction = erlDecodeMay (mapEntry "key" any) params >>= erlDecodeMay string >>= arrowKeyToDirection
     | _ => pure model
-  pure (the GameState (record { hasStarted = True, heading = direction } model))
+  pure (record { hasStarted = True, heading = direction } model)
 update _ _ model = pure model
 
 view : Model -> View

@@ -12,6 +12,7 @@ Model = Int
 init : IO Model
 init = pure 0
 
+partial
 update : String -> ErlTerm -> Model -> IO Model
 update "inc" params model = pure $ model + 1
 update "dec" params model = pure $ model - 1
@@ -21,6 +22,8 @@ view model =
   let assigns = insert (MkAtom "val") model empty
   in renderTemplate "Elixir.DemoWeb.IdrisView" "counter.html" assigns
 
+
+partial
 exports : ErlExport
 exports =
   exportPhoenixLiveView "Elixir.DemoWeb.Idris.Counter" init update view skipHandleInfo
