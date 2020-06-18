@@ -1,0 +1,11 @@
+package demo
+
+modules =
+  Counter,
+  PacMan
+
+sourcedir = "lib/idris"
+builddir = "_build/idris"
+
+main = Counter
+executable = demo
