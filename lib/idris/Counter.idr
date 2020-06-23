@@ -27,6 +27,3 @@ partial
 exports : ErlExport
 exports =
   exportPhoenixLiveView "Elixir.DemoWeb.Idris.Counter" init update view skipHandleInfo
-
-main : IO ()
-main = pure ()

@@ -7,5 +7,4 @@ modules =
 sourcedir = "lib/idris"
 builddir = "_build/idris"
 
-main = Counter
-executable = demo
+library = demo
