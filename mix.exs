@@ -7,7 +7,7 @@ defmodule Demo.Mixfile do
       version: "0.1.0",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
-      idris_entrypoint: {"demo.ipkg", "lib/idris"},
+      idris_ipkg: "demo.ipkg",
       compilers: [:idris, :phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
