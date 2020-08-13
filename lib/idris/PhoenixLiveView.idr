@@ -29,7 +29,7 @@ socketAssign key value socket = unsafePerformIO $
 
 socketUpdate : (ErlType key, ErlType value) => key -> (ErlTerm -> value) -> ErlTerm -> ErlTerm
 socketUpdate key func socket = unsafePerformIO $
-  erlUnsafeCall ErlTerm "Elixir.Phoenix.LiveView" "update" [socket, key, func]
+  erlUnsafeCall ErlTerm "Elixir.Phoenix.LiveView" "update" [socket, key, MkFun1 func]
 
 socketGet : (ErlType key) => key -> ErlTerm -> Maybe ErlTerm
 socketGet key socket = do
